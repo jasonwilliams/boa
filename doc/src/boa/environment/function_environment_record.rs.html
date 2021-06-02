@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `boa/src/environment/function_environment_record.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>function_environment_record.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="https://raw.githubusercontent.com/jasonwilliams/boa/master/assets/logo.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../../boa/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/jasonwilliams/boa/master/assets/logo.svg' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `boa/src/environment/function_environment_record.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>function_environment_record.rs - source</title><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled ><script id="default-settings"></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="shortcut icon" href="https://raw.githubusercontent.com/jasonwilliams/boa/master/assets/logo.svg"><style type="text/css">#crate-search{background-image:url("../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../boa/index.html'><div class='logo-container'><img src='https://raw.githubusercontent.com/jasonwilliams/boa/master/assets/logo.svg' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../../brush.svg" width="18" height="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
+                <a id="settings-menu" href="../../../settings.html"><img src="../../../wheel.svg" width="18" height="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -195,6 +195,41 @@
 <span id="194">194</span>
 <span id="195">195</span>
 <span id="196">196</span>
+<span id="197">197</span>
+<span id="198">198</span>
+<span id="199">199</span>
+<span id="200">200</span>
+<span id="201">201</span>
+<span id="202">202</span>
+<span id="203">203</span>
+<span id="204">204</span>
+<span id="205">205</span>
+<span id="206">206</span>
+<span id="207">207</span>
+<span id="208">208</span>
+<span id="209">209</span>
+<span id="210">210</span>
+<span id="211">211</span>
+<span id="212">212</span>
+<span id="213">213</span>
+<span id="214">214</span>
+<span id="215">215</span>
+<span id="216">216</span>
+<span id="217">217</span>
+<span id="218">218</span>
+<span id="219">219</span>
+<span id="220">220</span>
+<span id="221">221</span>
+<span id="222">222</span>
+<span id="223">223</span>
+<span id="224">224</span>
+<span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! # Function Environment Records</span>
 <span class="doccomment">//!</span>
@@ -206,7 +241,8 @@
 <span class="doccomment">//! from within the function.</span>
 <span class="doccomment">//! More info: &lt;https://tc39.es/ecma262/#sec-function-environment-records&gt;</span>
 
-<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">ErrorKind</span>;
+<span class="kw">use</span> <span class="ident">gc</span>::<span class="ident">Gc</span>;
+
 <span class="kw">use</span> <span class="kw">crate</span>::{
     <span class="ident">environment</span>::{
         <span class="ident">declarative_environment_record</span>::<span class="ident">DeclarativeEnvironmentRecord</span>,
@@ -215,7 +251,7 @@
     },
     <span class="ident">gc</span>::{<span class="ident">empty_trace</span>, <span class="ident">Finalize</span>, <span class="ident">Trace</span>},
     <span class="ident">object</span>::<span class="ident">GcObject</span>,
-    <span class="ident">Value</span>,
+    <span class="ident">Context</span>, <span class="prelude-ty">Result</span>, <span class="ident">Value</span>,
 };
 
 <span class="doccomment">/// Different binding status for `this`.</span>
@@ -255,17 +291,39 @@
 }
 
 <span class="kw">impl</span> <span class="ident">FunctionEnvironmentRecord</span> {
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bind_this_value</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(
+        <span class="ident">f</span>: <span class="ident">GcObject</span>,
+        <span class="ident">this</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span>,
+        <span class="ident">outer</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Environment</span><span class="op">&gt;</span>,
+        <span class="ident">binding_status</span>: <span class="ident">BindingStatus</span>,
+        <span class="ident">new_target</span>: <span class="ident">Value</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">FunctionEnvironmentRecord</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">func_env</span> <span class="op">=</span> <span class="ident">FunctionEnvironmentRecord</span> {
+            <span class="ident">declarative_record</span>: <span class="ident">DeclarativeEnvironmentRecord</span>::<span class="ident">new</span>(<span class="ident">outer</span>), <span class="comment">// the outer environment will come from Environment set as a private property of F - https://tc39.es/ecma262/#sec-ecmascript-function-objects</span>
+            <span class="ident">function</span>: <span class="ident">f</span>,
+            <span class="ident">this_binding_status</span>: <span class="ident">binding_status</span>,
+            <span class="ident">home_object</span>: <span class="ident">Value</span>::<span class="ident">undefined</span>(),
+            <span class="ident">new_target</span>,
+            <span class="ident">this_value</span>: <span class="ident">Value</span>::<span class="ident">undefined</span>(),
+        };
+        <span class="comment">// If a `this` value has been passed, bind it to the environment</span>
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">v</span>) <span class="op">=</span> <span class="ident">this</span> {
+            <span class="ident">func_env</span>.<span class="ident">bind_this_value</span>(<span class="ident">v</span>).<span class="ident">unwrap</span>();
+        }
+        <span class="ident">func_env</span>
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bind_this_value</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">value</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">this_binding_status</span> {
             <span class="comment">// You can not bind an arrow function, their `this` value comes from the lexical scope above</span>
             <span class="ident">BindingStatus</span>::<span class="ident">Lexical</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Cannot bind to an arrow function!&quot;</span>);
             }
             <span class="comment">// You can not bind a function twice</span>
-            <span class="ident">BindingStatus</span>::<span class="ident">Initialized</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">ErrorKind</span>::<span class="ident">new_reference_error</span>(
-                <span class="string">&quot;Cannot bind to an initialised function!&quot;</span>,
-            )),
-
+            <span class="ident">BindingStatus</span>::<span class="ident">Initialized</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">todo</span><span class="macro">!</span>();
+                <span class="comment">// context.throw_reference_error(&quot;Cannot bind to an initialised function!&quot;)</span>
+            }
             <span class="ident">BindingStatus</span>::<span class="ident">Uninitialized</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">this_value</span> <span class="op">=</span> <span class="ident">value</span>.<span class="ident">clone</span>();
                 <span class="self">self</span>.<span class="ident">this_binding_status</span> <span class="op">=</span> <span class="ident">BindingStatus</span>::<span class="ident">Initialized</span>;
@@ -293,39 +351,48 @@
     }
 
     <span class="kw">fn</span> <span class="ident">create_mutable_binding</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">name</span>: <span class="ident">String</span>,
         <span class="ident">deletion</span>: <span class="ident">bool</span>,
         <span class="ident">allow_name_reuse</span>: <span class="ident">bool</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
+        <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">declarative_record</span>
-            .<span class="ident">create_mutable_binding</span>(<span class="ident">name</span>, <span class="ident">deletion</span>, <span class="ident">allow_name_reuse</span>)
+            .<span class="ident">create_mutable_binding</span>(<span class="ident">name</span>, <span class="ident">deletion</span>, <span class="ident">allow_name_reuse</span>, <span class="ident">context</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">create_immutable_binding</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="ident">String</span>, <span class="ident">strict</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">create_immutable_binding</span>(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        <span class="ident">name</span>: <span class="ident">String</span>,
+        <span class="ident">strict</span>: <span class="ident">bool</span>,
+        <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">declarative_record</span>
-            .<span class="ident">create_immutable_binding</span>(<span class="ident">name</span>, <span class="ident">strict</span>)
+            .<span class="ident">create_immutable_binding</span>(<span class="ident">name</span>, <span class="ident">strict</span>, <span class="ident">context</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">initialize_binding</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">value</span>: <span class="ident">Value</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">declarative_record</span>.<span class="ident">initialize_binding</span>(<span class="ident">name</span>, <span class="ident">value</span>)
+    <span class="kw">fn</span> <span class="ident">initialize_binding</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">value</span>: <span class="ident">Value</span>, <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">declarative_record</span>
+            .<span class="ident">initialize_binding</span>(<span class="ident">name</span>, <span class="ident">value</span>, <span class="ident">context</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">set_mutable_binding</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>,
         <span class="ident">value</span>: <span class="ident">Value</span>,
         <span class="ident">strict</span>: <span class="ident">bool</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
+        <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
         <span class="self">self</span>.<span class="ident">declarative_record</span>
-            .<span class="ident">set_mutable_binding</span>(<span class="ident">name</span>, <span class="ident">value</span>, <span class="ident">strict</span>)
+            .<span class="ident">set_mutable_binding</span>(<span class="ident">name</span>, <span class="ident">value</span>, <span class="ident">strict</span>, <span class="ident">context</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">get_binding_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">_strict</span>: <span class="ident">bool</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">declarative_record</span>.<span class="ident">get_binding_value</span>(<span class="ident">name</span>, <span class="ident">_strict</span>)
+    <span class="kw">fn</span> <span class="ident">get_binding_value</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>, <span class="ident">strict</span>: <span class="ident">bool</span>, <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">declarative_record</span>
+            .<span class="ident">get_binding_value</span>(<span class="ident">name</span>, <span class="ident">strict</span>, <span class="ident">context</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">delete_binding</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+    <span class="kw">fn</span> <span class="ident">delete_binding</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">name</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="self">self</span>.<span class="ident">declarative_record</span>.<span class="ident">delete_binding</span>(<span class="ident">name</span>)
     }
 
@@ -333,15 +400,14 @@
         <span class="op">!</span><span class="macro">matches</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">this_binding_status</span>, <span class="ident">BindingStatus</span>::<span class="ident">Lexical</span>)
     }
 
-    <span class="kw">fn</span> <span class="ident">get_this_binding</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span>, <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">get_this_binding</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">this_binding_status</span> {
             <span class="ident">BindingStatus</span>::<span class="ident">Lexical</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;There is no this for a lexical function record&quot;</span>);
             }
-            <span class="ident">BindingStatus</span>::<span class="ident">Uninitialized</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">ErrorKind</span>::<span class="ident">new_reference_error</span>(
-                <span class="string">&quot;Uninitialised binding for this function&quot;</span>,
-            )),
-
+            <span class="ident">BindingStatus</span>::<span class="ident">Uninitialized</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="ident">context</span>.<span class="ident">throw_reference_error</span>(<span class="string">&quot;Uninitialised binding for this function&quot;</span>)
+            }
             <span class="ident">BindingStatus</span>::<span class="ident">Initialized</span> <span class="op">=</span><span class="op">&gt;</span> <span class="prelude-val">Ok</span>(<span class="self">self</span>.<span class="ident">this_value</span>.<span class="ident">clone</span>()),
         }
     }
@@ -354,8 +420,8 @@
         }
     }
 
-    <span class="kw">fn</span> <span class="ident">with_base_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Value</span> {
-        <span class="ident">Value</span>::<span class="ident">undefined</span>()
+    <span class="kw">fn</span> <span class="ident">with_base_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">GcObject</span><span class="op">&gt;</span> {
+        <span class="prelude-val">None</span>
     }
 
     <span class="kw">fn</span> <span class="ident">get_outer_environment_ref</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="ident">Environment</span><span class="op">&gt;</span> {
@@ -370,28 +436,32 @@
         <span class="ident">EnvironmentType</span>::<span class="ident">Function</span>
     }
 
-    <span class="kw">fn</span> <span class="ident">get_global_object</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Value</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">declarative_record</span>.<span class="ident">get_global_object</span>()
-    }
-
     <span class="kw">fn</span> <span class="ident">recursive_create_mutable_binding</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">name</span>: <span class="ident">String</span>,
         <span class="ident">deletion</span>: <span class="ident">bool</span>,
         <span class="ident">_scope</span>: <span class="ident">VariableScope</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">create_mutable_binding</span>(<span class="ident">name</span>, <span class="ident">deletion</span>, <span class="bool-val">false</span>)
+        <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">create_mutable_binding</span>(<span class="ident">name</span>, <span class="ident">deletion</span>, <span class="bool-val">false</span>, <span class="ident">context</span>)
     }
 
     <span class="kw">fn</span> <span class="ident">recursive_create_immutable_binding</span>(
-        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
         <span class="ident">name</span>: <span class="ident">String</span>,
         <span class="ident">deletion</span>: <span class="ident">bool</span>,
         <span class="ident">_scope</span>: <span class="ident">VariableScope</span>,
-    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">ErrorKind</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">create_immutable_binding</span>(<span class="ident">name</span>, <span class="ident">deletion</span>)
+        <span class="ident">context</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Context</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>()<span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">create_immutable_binding</span>(<span class="ident">name</span>, <span class="ident">deletion</span>, <span class="ident">context</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">FunctionEnvironmentRecord</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Environment</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">env</span>: <span class="ident">FunctionEnvironmentRecord</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Environment</span> {
+        <span class="ident">Gc</span>::<span class="ident">new</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="ident">env</span>))
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="boa"></div>
-    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><section class="footer"></section><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="boa" data-search-js="../../../search-index.js"></div>
+    <script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script></body></html>
