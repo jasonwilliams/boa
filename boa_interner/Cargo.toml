@@ -1,8 +1,8 @@
 [package]
 name = "boa_interner"
-version = "0.14.0"
+version = "0.15.0"
 edition = "2021"
-rust-version = "1.58"
+rust-version = "1.60"
 authors = ["boa-dev"]
 description = "String interner used in Boa."
 repository = "https://github.com/boa-dev/boa"
@@ -11,6 +11,7 @@ categories = ["data-structures"]
 license = "Unlicense/MIT"
 
 [dependencies]
-string-interner = "0.14.0"
-serde = { version = "1.0.136", features = ["derive"], optional = true }
-gc = { version = "0.4.1", features = ["derive"] }
+serde = { version = "1.0.140", features = ["derive"], optional = true }
+phf = { version = "0.11.1", features = ["macros"] }
+rustc-hash = "1.1.0"
+static_assertions = "1.1.0"
