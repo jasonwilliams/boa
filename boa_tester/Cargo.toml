@@ -17,7 +17,7 @@ boa_interner = { path = "../boa_interner", version = "0.16.0" }
 boa_gc = { path = "../boa_gc", version = "0.16.0" }
 clap = { version = "3.2.22", features = ["derive"] }
 serde = { version = "1.0.145", features = ["derive"] }
-serde_yaml = "0.9.13"
+serde_yaml = "0.9.14"
 serde_json = "1.0.85"
 bitflags = "1.3.2"
 regex = "1.6.0"
