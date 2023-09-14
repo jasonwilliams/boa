@@ -35,7 +35,7 @@ jobs:
           command: tarpaulin
           args: --workspace --features intl --ignore-tests --engine llvm --out Xml
       - name: Upload to codecov.io
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
 
   tests:
     name: Build and Test
