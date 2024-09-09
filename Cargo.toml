@@ -106,7 +106,7 @@ num-integer = "0.1.46"
 ryu-js = "1.0.1"
 tap = "1.0.1"
 thiserror = "1.0.63"
-dashmap = "5.5.3"
+dashmap = "6.1.0"
 num_enum = "0.7.3"
 itertools = { version = "0.13.0", default-features = false }
 portable-atomic = "1.7.0"
